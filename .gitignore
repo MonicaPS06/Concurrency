@@ -1,0 +1,11 @@
+/Battery.class
+/BatteryUsageSimulator.class
+/ChainedExceptionHandler.class
+/DataExchangeSimulator.class
+/EnergyManagementSystemMain.class
+/EnergySourceSimulator.class
+/LogFileManager.class
+/LogFileReader.class
+/MetadataManager.class
+/MultipleExceptionHandler.class
+/RethrowExceptionHandler.class
