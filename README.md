@@ -17,6 +17,7 @@ Multithreaded Usage Simulation:
 
 Simultaneous usage of battery resources by various energy-consuming objects.
 Overload control mechanisms are in place to prevent excessive energy draw, ensuring system stability.
+
 Team Responsibilities and Deliverables
 
 Monica: Battery Charging Simulation
@@ -33,10 +34,13 @@ Mechanisms to monitor and control battery usage, preventing overload scenarios.
 Deliverables:
 BatteryUsageSimulator class with overload monitoring.
 
-Daranya: Concurrency Model Comparison 
+Daranya:  
 Implementations:
-Research and provide answers to concurrency-related questions (comparison of concurrency models, concurrency vs. parallelism, blocking vs. non-blocking concurrency algorithms).
+Integration of code
+Worked on Controling overload of the system
+Research and provided differences between concurrency vs. parallelism.
 Deliverables:
-explanations of concurrency models in the README.md.
+ControlSystem class
+Document with answers
 
 The Answers were given in a separate file
