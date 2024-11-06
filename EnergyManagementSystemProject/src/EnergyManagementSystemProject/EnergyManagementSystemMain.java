@@ -21,15 +21,54 @@ public class EnergyManagementSystemMain {
         LogFileReader logFileReader = new LogFileReader();
         ChainedExceptionHandler chainedExceptionHandler = new ChainedExceptionHandler();
         
-        Battery battery = new Battery(100);
+        double capacity = 100.0;
+        Battery battery = new Battery(capacity, null);
+        
+        System.out.println("===== Simulation Start =====\n");
+        System.out.println("Battery initialized with capacity: " + battery.getCapacity() + " units and charge:" + battery.getCurrentCharge() + "\n");
+        
         EnergySourceSimulator solar = new EnergySourceSimulator(battery, 20, "Solar");
         EnergySourceSimulator wind = new EnergySourceSimulator(battery, 30, "Wind");
         EnergySourceSimulator hydro = new EnergySourceSimulator(battery, 25, "Hydro");
-        // Start the energy sources (multithreaded charging)
+      
+        // Example of creating BatteryUsageSimulator instances
+        BatteryUsageSimulator highPowerDevice = new BatteryUsageSimulator(battery, 15, "HighPowerDevice", false);
+        BatteryUsageSimulator lowPowerDevice = new BatteryUsageSimulator(battery, 5, "LowPowerDevice", false);
+        BatteryUsageSimulator variablePowerDevice = new BatteryUsageSimulator(battery, 10, "VariablePowerDevice", true);
+        
+        // Control System
+        ControlSystem controlSystem = new ControlSystem(battery, solar, wind, hydro, highPowerDevice, lowPowerDevice, variablePowerDevice);
+        battery.setControlSystem(controlSystem);
+        
+        //new Thread(() -> controlSystem.monitorAndControl()).start();
+        
+        // Start the energy sources (multi-threaded charging)
         solar.start();
         wind.start();
         hydro.start();
         
+        // Start devices using energy from the battery
+        highPowerDevice.start();
+        lowPowerDevice.start();
+        variablePowerDevice.start();
+        
+        controlSystem.monitorAndControl();
+        
+        
+     // Wait for all threads to finish
+        try {
+            solar.join();
+            wind.join();
+            hydro.join();
+            highPowerDevice.join();
+            lowPowerDevice.join();
+            variablePowerDevice.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // Restore the interrupted status
+        }
+        
+        System.out.println("===== Simulation End =====\n");
+ 
         try {
         	
             // File management actions
@@ -46,8 +85,8 @@ public class EnergyManagementSystemMain {
             logManager.createDailyLogs(stations, sources);
 
             // Handle multiple exceptions in log management
-            System.out.println("Handling file exceptions...");
-            multipleExceptionHandler.handleFileOperations("logs/StationA_Solar_log_" + getCurrentDate() + ".txt");
+            //System.out.println("Handling file exceptions...");
+            //multipleExceptionHandler.handleFileOperations("logs/StationA_Solar_log_" + getCurrentDate() + ".txt");
 
             // Ensure the correct archive folder exists
             File archiveFolder = new File("archived_logs");
@@ -131,18 +170,22 @@ public class EnergyManagementSystemMain {
         
 
         // Re-throw Exception Handling
-        try {
-            System.out.println("Handling and rethrowing exception...");
-            rethrowExceptionHandler.handleAndRethrow();
+        //try {
+        //    System.out.println("Handling and rethrowing exception...");
+        //    rethrowExceptionHandler.handleAndRethrow();
 
-        } catch (IOException e) {
-            System.out.println("[ERROR] Rethrown IOException caught in main: " + e.getMessage());
-        }
+        //} catch (IOException e) {
+        //    System.out.println("[ERROR] Rethrown IOException caught in main: " + e.getMessage());
+        //}
     }
 
-    // Helper method to get the current date in the format "yyyyMMdd"
+    private static void println(String string) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	// Helper method to get the current date in the format "yyyyMMdd"
     public static String getCurrentDate() {
         return new java.text.SimpleDateFormat("yyyyMMdd").format(new java.util.Date());
     }
-
 }
